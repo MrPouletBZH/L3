@@ -15,7 +15,7 @@ contenug 2	3
 			2
 empiler -1	2
 			-1
-eg			12
+dif			13
 bsifaux ??	18
 			62
 contenug 2	3
@@ -37,7 +37,7 @@ empiler 10	2
 			10
 inf			8
 bsifaux ??	18
-			46
+			50
 contenug 0	3
 			0
 empiler 1	2
@@ -59,9 +59,9 @@ affecterg 2	4
 			2
 bincond ??	18
 			14
-empilerg 1	2
-			4
-empilerg 0	2
+contenu 1	3
+			1
+contenu 0	3
 			0
 ecrent		22
 ecrent		22
