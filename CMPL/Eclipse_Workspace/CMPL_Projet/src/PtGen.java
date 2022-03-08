@@ -121,6 +121,9 @@ public class PtGen {
     
     private static int tCour; // type de l'expression compilee
     private static int vCour; // sert uniquement lors de la compilation d'une valeur (entiere ou boolenne)
+
+	private static int i;
+	private static int identCour;
   
    
     // TABLE DES SYMBOLES
@@ -131,6 +134,9 @@ public class PtGen {
     // it = indice de remplissage de tabSymb
     // bc = bloc courant (=1 si le bloc courant est le programme principal)
 	private static int it, bc;
+
+	// indice de la dernière constante
+	private static int itConst;
 	
 	/** 
 	 * utilitaire de recherche de l'ident courant (ayant pour code UtilLex.numIdCourant) dans tabSymb
@@ -196,6 +202,8 @@ public class PtGen {
 		// indices de gestion de la table des symboles
 		it = 0;
 		bc = 1;
+		itConst = 0;
+		identCour = 0;
 		
 		// pile des reprises pour compilation des branchements en avant
 		pileRep = new TPileRep(); 
@@ -225,46 +233,211 @@ public class PtGen {
 			break;
 			
 		case 1:
-			po.produire(EMPILER);
-			po.produire(FAUX);
 			tCour = BOOL;
+			vCour = FAUX;
 			break;
 			
 		case 2:
-			po.produire(EMPILER);
-			po.produire(VRAI);
 			tCour = BOOL;
+			vCour = VRAI;
 			break;
 			
 		case 3:
-			po.produire(EMPILER);
-			po.produire(-UtilLex.valEnt);
 			tCour = ENT;
+			vCour = -UtilLex.valEnt;
 			break;
 			
 		case 4:
-			po.produire(EMPILER);
-			po.produire(UtilLex.valEnt);
 			tCour = ENT;
+			vCour = UtilLex.valEnt;
 			break;
 			
 		case 5:
-			int i = presentIdent(0);
+			i = presentIdent(1);
 			if (i == 0) {
 				UtilLex.messErr("ident n'existe pas dans tabSymb");
 			} else {
-				po.produire(CONTENUG);
-				po.produire(tabSymb[i].info);
-				tCour = tabSymb[i].type;
+				if (tCour == tabSymb[i].type || tCour == NEUTRE) {
+					if (tabSymb[i].categorie == CONSTANTE)
+						po.produire(EMPILER);
+					else
+						po.produire(CONTENUG);
+
+					po.produire(tabSymb[i].info);
+					tCour = tabSymb[i].type;
+				} else {
+					UtilLex.messErr("Type mismatch: " + tCour + " required, " + tabSymb[i].type + " found");
+				}
 			}
 			break;
 
-                case 255 : 
+		case 51:
+			po.produire(EMPILER);
+			po.produire(vCour);
+			break;
+
+		case 6: 
+			if(tCour != ENT) {
+				UtilLex.messErr("Type mismatch: Integer required for multiplication");
+			} else {
+				po.produire(MUL);
+			}
+			break;
+
+		case 7:
+			if (tCour != ENT)
+				UtilLex.messErr("Type mismatch: Integer required for division");
+			else
+				po.produire(DIV);
+			break;
+
+		case 8:
+			if (tCour != ENT)
+				UtilLex.messErr("Type mismatch: Integer required for addition");
+			else
+				po.produire(ADD);
+			break;
+
+		case 9: 
+			if (tCour != ENT)
+				UtilLex.messErr("Type mismatch: Integer required for subtraction");
+			else
+				po.produire(SOUS);
+			break;
+
+		case 10: 
+			verifEnt();
+			po.produire(EG);
+			tCour = BOOL;
+			break;
+
+		case 11: 
+			verifEnt();
+			po.produire(DIFF);
+			tCour = BOOL;
+			break;
+
+		case 12: 
+			verifEnt();
+			po.produire(SUP);
+			tCour = BOOL;
+			break;
+
+		case 13: 
+			verifEnt();
+			po.produire(SUPEG);
+			tCour = BOOL;
+			break;
+
+		case 14: 	
+			verifEnt();
+			po.produire(INF);
+			tCour = BOOL;
+			break;
+
+		case 15: 
+			verifEnt();
+			po.produire(INFEG);
+			tCour = BOOL;
+			break;
+
+		case 16:
+			verifBool();
+			po.produire(NON);
+			break;
+
+		case 17:
+			verifBool();
+			po.produire(ET);
+			break;
+
+		case 18:
+			verifBool();
+			po.produire(OU);
+			break;
+
+		case 19:
+			tCour = NEUTRE;
+			break;
+
+		case 20:
+			i = presentIdent(1);
+			if (i == 0) {
+				placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
+				itConst++;
+			} else {
+				UtilLex.messErr("Ident already exists");
+			}
+			break;
+
+		case 21:
+			i = presentIdent(1);
+			if (i == 0) {
+				placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, it-itConst);
+			} else {
+				UtilLex.messErr("Ident already exists");
+			}
+			break;
+
+		case 22:
+			tCour = ENT;
+			break;
+		
+		case 23:
+			tCour = BOOL;
+			break;
+		
+		case 24:
+			i = presentIdent(1);
+			if (i == 0) {
+				UtilLex.messErr("ident n'existe pas dans tabSymb");
+			} else {
+				if (tCour == tabSymb[i].type || tCour == NEUTRE) {
+					if (tabSymb[i].type == ENT)
+						po.produire(LIRENT);
+					else if (tabSymb[i].type == BOOL)
+						po.produire(LIREBOOL);
+					else
+						UtilLex.messErr("Type " + tabSymb[i].type + " can't be read");
+
+					po.produire(AFFECTERG);
+					po.produire(tabSymb[i].info);
+				}
+			}
+			break;
+		
+		case 25:
+			if (tCour == ENT)
+				po.produire(ECRENT);
+			else if (tCour == BOOL)
+				po.produire(ECRBOOL);
+			else
+				UtilLex.messErr("Type " + tCour + " can't be write");
+
+			break;
+		
+		case 26:
+			po.produire(RESERVER);
+			po.produire(it-itConst);
+			break;
+		
+		case 27:
+			po.produire(AFFECTERG);
+			po.produire(identCour-itConst-1);
+			break;
+		
+		case 28:
+			identCour = presentIdent(itConst+1);
+			break;
+		
+        case 255 : 
+			po.produire(ARRET);
+
+			po.constGen();
+			po.constObj();
 			afftabSymb(); // affichage de la table des symboles en fin de compilation
 			break;
 
-		// TODO
-		
 		default:
 			System.out.println("Point de generation non prevu dans votre liste");
 			break;
