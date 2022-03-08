@@ -392,17 +392,15 @@ public class PtGen {
 			if (i == 0) {
 				UtilLex.messErr("ident n'existe pas dans tabSymb");
 			} else {
-				if (tCour == tabSymb[i].type || tCour == NEUTRE) {
-					if (tabSymb[i].type == ENT)
-						po.produire(LIRENT);
-					else if (tabSymb[i].type == BOOL)
-						po.produire(LIREBOOL);
-					else
-						UtilLex.messErr("Type " + tabSymb[i].type + " can't be read");
+				if (tabSymb[i].type == ENT)
+					po.produire(LIRENT);
+				else if (tabSymb[i].type == BOOL)
+					po.produire(LIREBOOL);
+				else						
+					UtilLex.messErr("Type " + tabSymb[i].type + " can't be read");
 
-					po.produire(AFFECTERG);
-					po.produire(tabSymb[i].info);
-				}
+				po.produire(AFFECTERG);
+				po.produire(tabSymb[i].info);
 			}
 			break;
 		
@@ -428,6 +426,23 @@ public class PtGen {
 		
 		case 28:
 			identCour = presentIdent(itConst+1);
+			break;
+
+		case 29:
+			po.produire(BSIFAUX);
+			po.produire(0);
+			pileRep.empiler(po.getIpo());
+			break;
+
+		case 30:
+			po.produire(BINCOND);
+			po.produire(0);
+			po.modifier(pileRep.depiler(), po.getIpo()+1);
+			pileRep.empiler(po.getIpo());
+			break;
+
+		case 31:
+			po.modifier(pileRep.depiler(), po.getIpo()+1);
 			break;
 		
         case 255 : 

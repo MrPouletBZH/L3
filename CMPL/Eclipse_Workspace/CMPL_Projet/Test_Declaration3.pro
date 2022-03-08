@@ -1,4 +1,3 @@
-programme premiertest:
 
 const min=7; max=+77; marq=-1; oui=vrai; nenni=faux;
 var ent i,j;
@@ -6,9 +5,9 @@ var ent i,j;
 
 debut
 	i:= (max-min) div 2;
-	b1:= oui et nenni;
-	b2:= non b1 et (oui ou nenni);
-	j:= (i+5)*10;
+	b1:= min <> max;
+	b2:= min < max;
+	lire(i, j, b3);
 	ecrire(i, j);
-	ecrire(b1, b2);
+	ecrire(b1, b2, b3);
 fin

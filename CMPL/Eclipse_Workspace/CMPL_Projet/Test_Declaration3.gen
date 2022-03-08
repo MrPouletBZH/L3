@@ -7,29 +7,28 @@ FICHIER Test_Declaration3.gen :
    8  empiler         2
   10  div       
   11  affecterg       0
-  13  empiler         1
-  15  empiler         0
-  17  et        
+  13  empiler         7
+  15  empiler        77
+  17  diff      
   18  affecterg       2
-  20  contenug        2
-  22  non       
-  23  empiler         1
-  25  empiler         0
-  27  ou        
-  28  et        
-  29  affecterg       3
-  31  contenug        0
-  33  empiler         5
-  35  add       
-  36  empiler        10
-  38  mul       
-  39  affecterg       1
-  41  contenug        0
-  43  ecrent    
-  44  contenug        1
-  46  ecrent    
-  47  contenug        2
-  49  ecrbool   
-  50  contenug        3
-  52  ecrbool   
-  53  arret     
+  20  empiler         7
+  22  empiler        77
+  24  inf       
+  25  affecterg       3
+  27  lirent    
+  28  affecterg       0
+  30  lirent    
+  31  affecterg       1
+  33  lirebool  
+  34  affecterg       4
+  36  contenug        0
+  38  ecrent    
+  39  contenug        1
+  41  ecrent    
+  42  contenug        2
+  44  ecrbool   
+  45  contenug        3
+  47  ecrbool   
+  48  contenug        4
+  50  ecrbool   
+  51  arret     

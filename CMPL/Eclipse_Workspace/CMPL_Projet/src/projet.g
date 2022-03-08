@@ -115,7 +115,7 @@ instruction
   |
   ;
   
-inssi : 'si' expression 'alors' instructions ('sinon'  instructions)? 'fsi' 
+inssi : 'si' expression {PtGen.pt(29);} 'alors' instructions ('sinon' {PtGen.pt(30);} instructions)? 'fsi' {PtGen.pt(31);}
   ;
   
 inscond : 'cond'  expression  ':' instructions 
