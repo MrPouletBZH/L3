@@ -444,6 +444,22 @@ public class PtGen {
 		case 31:
 			po.modifier(pileRep.depiler(), po.getIpo()+1);
 			break;
+
+		case 32:
+			pileRep.empiler(po.getIpo()+1);
+			break;
+
+		case 33:
+			po.produire(BSIFAUX);
+			po.produire(0);
+			pileRep.empiler(po.getIpo());
+			break;
+
+		case 34:
+			po.produire(BINCOND);
+			po.modifier(pileRep.depiler(), po.getIpo()+1);
+			po.produire(pileRep.depiler());
+			break;
 		
         case 255 : 
 			po.produire(ARRET);

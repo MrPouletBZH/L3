@@ -124,7 +124,7 @@ inscond : 'cond'  expression  ':' instructions
           'fcond' 
   ;
   
-boucle  : 'ttq'  expression 'faire' instructions 'fait' 
+boucle  : 'ttq' {PtGen.pt(32);} expression {PtGen.pt(33);} 'faire' instructions 'fait' {PtGen.pt(34);}
   ;
   
 lecture: 'lire' '(' ident {PtGen.pt(24);} ( ',' ident {PtGen.pt(24);} )* ')' 

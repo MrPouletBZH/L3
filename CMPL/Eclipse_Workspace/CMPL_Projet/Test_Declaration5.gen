@@ -1,0 +1,28 @@
+FICHIER Test_Declaration5.gen : 
+
+   1  reserver        2
+   3  lirent    
+   4  affecterg       0
+   6  lirent    
+   7  affecterg       1
+   9  contenug        0
+  11  contenug        1
+  13  diff      
+  14  bsifaux        21
+  16  empiler        -1
+  18  ecrent    
+  19  bincond        42
+  21  lirent    
+  22  affecterg       0
+  24  lirent    
+  25  affecterg       1
+  27  contenug        0
+  29  contenug        1
+  31  diff      
+  32  bsifaux        39
+  34  empiler        -1
+  36  ecrent    
+  37  bincond        42
+  39  empiler         1
+  41  ecrent    
+  42  arret     

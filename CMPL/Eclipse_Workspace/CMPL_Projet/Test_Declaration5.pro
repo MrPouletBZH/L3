@@ -1,14 +1,18 @@
+programme premiertest:
 
-const different=-1; egaux=1;
+const diff=-1; egs=1;
 var ent i,j;
-    bool b1,b2,b3;
 
 debut
-	debut
 	lire(i,j);
 	si i <> j alors 
-		afficher(different);
+		ecrire(diff);
 	sinon
-		afficher(egaux);
+		lire(i,j);
+		si i <> j alors 
+			ecrire(diff);
+		sinon
+			ecrire(egs)
+		fsi
 	fsi
 fin
