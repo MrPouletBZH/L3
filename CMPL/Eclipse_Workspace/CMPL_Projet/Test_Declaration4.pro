@@ -8,6 +8,6 @@ debut
 		lire(j); 
 		k:=k+j; 
 		i:=i-1;
-	fait
+	fait;
 	ecrire(k);
 fin
