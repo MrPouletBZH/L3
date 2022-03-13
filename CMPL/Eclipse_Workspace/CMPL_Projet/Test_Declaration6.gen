@@ -1,0 +1,31 @@
+FICHIER Test_Declaration6.gen : 
+
+   1  reserver        2
+   3  lirent    
+   4  affecterg       0
+   6  lirent    
+   7  affecterg       1
+   9  contenug        0
+  11  empiler        -1
+  13  eg        
+  14  bsifaux        21
+  16  empiler        -1
+  18  ecrent    
+  19  bincond        48
+  21  contenug        0
+  23  empiler         1
+  25  eg        
+  26  bsifaux        33
+  28  empiler         1
+  30  ecrent    
+  31  bincond        48
+  33  contenug        0
+  35  contenug        1
+  37  eg        
+  38  bsifaux        45
+  40  contenug        1
+  42  ecrent    
+  43  bincond        48
+  45  empiler       999
+  47  ecrent    
+  48  arret     

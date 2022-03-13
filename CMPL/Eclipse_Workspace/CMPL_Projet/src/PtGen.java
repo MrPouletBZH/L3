@@ -218,6 +218,8 @@ public class PtGen {
 		// initialisation du type de l'expression courante
 		tCour = NEUTRE;
 
+
+
 	} // initialisations
 
 	/**
@@ -363,8 +365,12 @@ public class PtGen {
 		case 20:
 			i = presentIdent(1);
 			if (i == 0) {
-				placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
-				itConst++;
+				if (bc == 1){
+					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
+					itConst++;
+				} else {
+					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, tabSymb[bc-1].info+2);
+				}
 			} else {
 				UtilLex.messErr("Ident already exists");
 			}
@@ -460,7 +466,107 @@ public class PtGen {
 			po.modifier(pileRep.depiler(), po.getIpo()+2);
 			po.produire(pileRep.depiler());
 			break;
+
+		case 35:
+			po.produire(BSIFAUX);
+			po.produire(0);
+			pileRep.empiler(po.getIpo());
+			break;
+	
+		case 36:
+			po.produire(BINCOND);
+			po.modifier(pileRep.depiler(), po.getIpo()+2);
+			po.produire(0);
+			pileRep.empiler(po.getIpo());
+			break;
+
+		case 37:
+			po.produire(BINCOND);
+			po.modifier(pileRep.depiler(), po.getIpo()+2);
+			po.produire(pileRep.depiler());
+			pileRep.empiler(po.getIpo());
+			break;
+
+		case 38:
+			int ind = pileRep.depiler();
+			while ( ind != 0 ) {
+				int tmp = po.getElt(ind);
+				po.modifier(ind, po.getIpo()+1);
+				ind = tmp;
+			}
+			break;
+
+		case 39:
+			po.produire(BINCOND);
+			po.produire(0);
+			pileRep.empiler(po.getIpo());
+			break;
+
+		case 40:
+			po.modifier(pileRep.depiler(), po.getIpo()+1);
+			break;
+
+		case 41:
+			i = presentIdent(1);
+			if (i == 0) {
+				placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, po.getIpo()+1);
+				placeIdent(-1, PRIVEE, NEUTRE, 0);	
+				bc = it+1;			
+			} else {
+				UtilLex.messErr("Ident already exists");
+			}
+			break;
+
+		case 42:
+			i = presentIdent(bc);
+			if (i == 0) {
+				placeIdent(UtilLex.numIdCourant, PARAMFIXE, tCour, tabSymb[bc-1].info);
+				tabSymb[bc-1].info++;
+			} else {
+				UtilLex.messErr("Ident already exists");
+			}
+			break;
 		
+		case 43:
+			i = presentIdent(bc);
+			if (i == 0) {
+				placeIdent(UtilLex.numIdCourant, PARAMMOD, tCour, tabSymb[bc-1].info);
+				tabSymb[bc-1].info++;
+			} else {
+				UtilLex.messErr("Ident already exists");
+			}
+			break;
+
+		case 44:
+			break;
+
+		case 45:
+			break;
+
+		case 46:
+			break;
+
+		case 47:
+			break;
+
+		case 48:
+			break;
+
+		case 49:
+			break;
+
+		case 50:
+			break;
+
+		case 52:
+			break;
+
+		case 53:
+			break;
+
+		case 54:
+			break;
+
         case 255 : 
 			po.produire(ARRET);
 
