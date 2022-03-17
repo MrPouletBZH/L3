@@ -14,7 +14,7 @@ debut
 				i = diff: ecrire(diff),
 				i = egs: ecrire(egs),
 				i = j: ecrire(j)
-				aut cond
+				aut ecrire(diff-egs)
 			fcond;
 	fcond;
 fin

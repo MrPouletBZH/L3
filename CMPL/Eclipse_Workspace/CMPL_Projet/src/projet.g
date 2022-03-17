@@ -78,7 +78,7 @@ type  : 'ent'  {PtGen.pt(22);}
 decprocs: {PtGen.pt(39);} (decproc ptvg)+ {PtGen.pt(40);}
   ;
   
-decproc :  'proc'  ident {PtGen.pt(41);} parfixe? parmod? consts? vars? corps 
+decproc :  'proc'  ident {PtGen.pt(41);} parfixe? parmod? consts? vars? corps {PtGen.pt(44);}
   ;
   
 ptvg  : ( ';'
@@ -118,9 +118,9 @@ instruction
 inssi : 'si' expression {PtGen.pt(29);} 'alors' instructions ('sinon' {PtGen.pt(30);} instructions)? 'fsi' {PtGen.pt(31);}
   ;
   
-inscond : 'cond'  expression {PtGen.pt(35);} ':' instructions {PtGen.pt(36);} 
-          (','  expression {PtGen.pt(35);} ':' instructions {PtGen.pt(37);} )* 
-          ('aut'  instructions |  ) 
+inscond : 'cond' {PtGen.pt(36);} expression {PtGen.pt(35);} ':' instructions  
+          (',' {PtGen.pt(37);} expression {PtGen.pt(35);} ':' instructions )* 
+          ('aut' {PtGen.pt(37);} instructions |  ) 
           'fcond' {PtGen.pt(38);}
   ;
   
@@ -135,14 +135,14 @@ ecriture: 'ecrire' '(' expression {PtGen.pt(25);} ( ',' expression {PtGen.pt(25)
   
 affouappel
   : ident  ({PtGen.pt(28);} ':=' expression {PtGen.pt(27);}
-            |   (effixes (effmods)?)?  
+            |   (effixes (effmods)?)?  {PtGen.pt(46);}
            )
   ;
   
 effixes : '(' (expression  (',' expression  )*)? ')'
   ;
   
-effmods :'(' (ident  (',' ident  )*)? ')'
+effmods :'(' (ident {PtGen.pt(45);} (',' ident {PtGen.pt(45);} )*)? ')'
   ; 
   
 expression: {PtGen.pt(19);} (exp1) ('ou'  exp1 {PtGen.pt(18);} )*  
