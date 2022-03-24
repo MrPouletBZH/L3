@@ -3,8 +3,8 @@ programme premiertest:
 var ent i;
 
 debut
-	i:=0;
+	lire(i);
 	cond
-		i = i: ecrire(i)
+		i = 0: ecrire(i)
 	fcond;
 fin

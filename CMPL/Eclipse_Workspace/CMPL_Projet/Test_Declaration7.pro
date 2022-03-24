@@ -16,5 +16,5 @@ programme premiertest:
 
 debut
 	d1 := 2;
-	carre(d1)(i);
+	carre(i)(d1);
 fin

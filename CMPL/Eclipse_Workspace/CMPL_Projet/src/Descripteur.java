@@ -17,6 +17,7 @@ public class Descripteur {
 	/**  classe interne EltDef definissant 
 	 * 	 le type de chaque element de la table des points d'entree tabDef
 	 */
+
 	
 	class EltDef {
 		// nomProc = nom de la procedure definie en DEF

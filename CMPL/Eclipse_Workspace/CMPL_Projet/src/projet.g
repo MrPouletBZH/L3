@@ -120,7 +120,7 @@ inssi : 'si' expression {PtGen.pt(29);} 'alors' instructions ('sinon' {PtGen.pt(
   
 inscond : 'cond' {PtGen.pt(36);} expression {PtGen.pt(35);} ':' instructions  
           (',' {PtGen.pt(37);} expression {PtGen.pt(35);} ':' instructions )* 
-          ('aut' {PtGen.pt(37);} instructions |  ) 
+          ('aut' {PtGen.pt(37);} instructions | {PtGen.pt(351);} ) 
           'fcond' {PtGen.pt(38);}
   ;
   
@@ -134,12 +134,12 @@ ecriture: 'ecrire' '(' expression {PtGen.pt(25);} ( ',' expression {PtGen.pt(25)
    ;
   
 affouappel
-  : ident  ({PtGen.pt(28);} ':=' expression {PtGen.pt(27);}
-            |   (effixes (effmods)?)?  {PtGen.pt(46);}
+  : ident {PtGen.pt(28);} ( ':=' expression {PtGen.pt(27);}
+            |  (effixes (effmods)?)?  {PtGen.pt(46);}
            )
   ;
   
-effixes : '(' (expression  (',' expression  )*)? ')'
+effixes : '(' (expression {PtGen.pt(47);} (',' expression {PtGen.pt(47);} )*)? ')'
   ;
   
 effmods :'(' (ident {PtGen.pt(45);} (',' ident {PtGen.pt(45);} )*)? ')'

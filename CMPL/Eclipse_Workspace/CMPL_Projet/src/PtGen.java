@@ -138,6 +138,8 @@ public class PtGen {
 	// indice de la dernière constante
 	private static int itConst;
 	private static int varLocCount;
+	private static int paramCount;
+
 	
 	/** 
 	 * utilitaire de recherche de l'ident courant (ayant pour code UtilLex.numIdCourant) dans tabSymb
@@ -206,6 +208,7 @@ public class PtGen {
 		itConst = 0;
 		identCour = 0;
 		varLocCount = 0;
+		paramCount = 0;
 
 		// pile des reprises pour compilation des branchements en avant
 		pileRep = new TPileRep(); 
@@ -261,17 +264,32 @@ public class PtGen {
 			if (i == 0) {
 				UtilLex.messErr("ident n'existe pas dans tabSymb");
 			} else {
-				//switch case tmtc
-				if (tabSymb[i].categorie == CONSTANTE)
-					po.produire(EMPILER);
-				else if (tabSymb[i].categorie == VARGLOBALE)
-					po.produire(CONTENUG);
+				switch (tabSymb[i].categorie) {
+					case CONSTANTE :
+						po.produire(EMPILER);
+						po.produire(tabSymb[i].info);
+						break;
+					case VARGLOBALE :
+						po.produire(CONTENUG);
+						po.produire(tabSymb[i].info);
+						break;
+					case VARLOCALE :
+						po.produire(CONTENUL);
+						po.produire(tabSymb[i].info);
+						po.produire(0);
+						break;
+					case PARAMFIXE : 
+						po.produire(CONTENUL);
+						po.produire(tabSymb[i].info);
+						po.produire(0);
+						break;
+					case PARAMMOD :
+						po.produire(CONTENUL);
+						po.produire(tabSymb[i].info);
+						po.produire(1);
+						break;
+				}
 
-				//si varlocale
-				//si parammod
-				//paramfixe
-
-				po.produire(tabSymb[i].info);
 				tCour = tabSymb[i].type;
 			}
 			break;
@@ -372,7 +390,7 @@ public class PtGen {
 					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
 					itConst++;
 				} else {
-					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, tabSymb[bc-1].info+2);
+					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
 				}
 			} else {
 				UtilLex.messErr("Ident already exists");
@@ -385,7 +403,7 @@ public class PtGen {
 				if (bc == 1)
 					placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, it-itConst);
 				else{
-					placeIdent(UtilLex.numIdCourant, VARLOCALE, tCour, it-itConst);
+					placeIdent(UtilLex.numIdCourant, VARLOCALE, tCour, tabSymb[bc-1].info + 2 + varLocCount);
 					varLocCount ++;
 				}
 			} else {
@@ -413,8 +431,28 @@ public class PtGen {
 				else						
 					UtilLex.messErr("Type " + tabSymb[i].type + " can't be read");
 
-				po.produire(AFFECTERG);
-				po.produire(tabSymb[i].info);
+				switch (tabSymb[i].categorie) {
+					case CONSTANTE :
+						UtilLex.messErr("Constant can't be read");
+						break;
+					case VARGLOBALE :
+						po.produire(AFFECTERG);
+						po.produire(tabSymb[i].info);
+						break;
+					case VARLOCALE :
+						po.produire(AFFECTERL);
+						po.produire(tabSymb[i].info);
+						po.produire(0);
+						break;
+					case PARAMFIXE : 
+						UtilLex.messErr("Fixe Parameter can't be read");
+						break;
+					case PARAMMOD :
+						po.produire(AFFECTERL);
+						po.produire(tabSymb[i].info);
+						po.produire(1);
+						break; 
+				}
 			}
 			break;
 		
@@ -441,8 +479,23 @@ public class PtGen {
 			break;
 		
 		case 27:
-			po.produire(AFFECTERG);
-			po.produire(identCour-itConst-1);
+			switch (tabSymb[identCour].categorie){
+				case VARLOCALE:  
+					po.produire(AFFECTERL);	 
+					po.produire(tabSymb[identCour].info);
+					po.produire(0);
+					break;
+				case VARGLOBALE: 
+					po.produire(AFFECTERG);
+					po.produire(tabSymb[identCour].info);
+					break;
+				case PARAMMOD:
+					po.produire(AFFECTERL);	 
+					po.produire(tabSymb[identCour].info);
+					po.produire(1);
+					break;
+				default: UtilLex.messErr("Can't affect");
+			}
 			break;
 		
 		case 28:
@@ -487,7 +540,11 @@ public class PtGen {
 			po.produire(0);
 			pileRep.empiler(po.getIpo());
 			break;
-	
+
+		case 351:
+			po.modifier(pileRep.depiler(), po.getIpo()+2);
+			break;
+
 		case 36:
 			pileRep.empiler(0);
 			break;
@@ -559,6 +616,9 @@ public class PtGen {
 					tabSymb[i].code = -1;
 				}
 			}
+			po.produire(RETOUR);
+			po.produire(it-bc+1);
+
 			bc = 1;
 			break;
 
@@ -567,26 +627,45 @@ public class PtGen {
 			if (i == 0) {
 				UtilLex.messErr("ident n'existe pas dans tabSymb");
 			} else {
-				//switch case tmtc
+				switch (tabSymb[i].categorie) {
+					case CONSTANTE :
+						UtilLex.messErr("Constant can't be used as a modular parameter");
+						break;
+					case VARGLOBALE :
+						po.produire(EMPILERADG);
+						po.produire(tabSymb[i].info);
+						break;
+					case VARLOCALE :
+						po.produire(EMPILERADL);
+						po.produire(tabSymb[i].info);
+						po.produire(0);
+						break;
+					case PARAMFIXE : 
+						UtilLex.messErr("Fixe Parameter can't be used as a modular parameter");
+						break;
+					case PARAMMOD :
+						po.produire(EMPILERADL);
+						po.produire(tabSymb[i].info);
+						po.produire(1);
+						break;
+				}
 
-				if (tabSymb[i].categorie == CONSTANTE)
-					UtilLex.messErr("Constante can't be used as a modular parameter");
-				else 
-					po.produire(EMPILERADG);
-				//si varlocale
-				//si parammod
-				//paramfixe
-
-				po.produire(tabSymb[i].info);
+				paramCount++;
 				tCour = tabSymb[i].type;
 			}
 			break;
 
 		case 46:
-			//appel + adresse + nb de param
+			po.produire(APPEL);
+			po.produire(tabSymb[identCour].info);
+			po.produire(paramCount);
+
+			tabSymb[identCour+1].info = paramCount;
+			paramCount = 0;
 			break;
 
 		case 47:
+			paramCount++;
 			break;
 
 		case 48:
