@@ -105,6 +105,18 @@ public class Edl {
 		transCode[0] = 0;
 		transDon[0] = 0;
 
+		int decalCode, decalDon;
+		for (int i = 1; i<nMod; i++){
+			decalCode = 0;
+			decalDon = 0;
+			for (int j = 0; j<i; j++){
+				decalDon+=tabDesc[j].getTailleGlobaux();
+				decalCode+=tabDesc[j].getTailleCode();
+			}
+			transDon[i] = decalDon;
+			transCode[i] = decalCode;
+		}
+
 		//TODO : ... A COMPLETER ...
 		// 
 		// 

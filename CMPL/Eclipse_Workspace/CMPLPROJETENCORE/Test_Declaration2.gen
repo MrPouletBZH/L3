@@ -4,6 +4,7 @@ FICHIER Test_Declaration2.gen :
    3  empiler         1
    5  empiler         0
    7  et        
-   8  contenug        2
-  10  ecrbool   
-  11  arret     
+   8  affecterg       2
+  10  contenug        2
+  12  ecrbool   
+  13  arret     

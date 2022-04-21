@@ -22,6 +22,8 @@
 
 import java.io.*;
 
+import javax.lang.model.util.ElementScanner6;
+
 /**
  * classe de mise en oeuvre du compilateur
  * =======================================
@@ -139,8 +141,8 @@ public class PtGen {
 	private static int it, bc;
 
 	// indice de la dernière constante
-	private static int itConst;
 	private static int varLocCount;
+	private static int varGlobCount;
 	private static int paramCount;
 
 	
@@ -208,9 +210,9 @@ public class PtGen {
 		// indices de gestion de la table des symboles
 		it = 0;
 		bc = 1;
-		itConst = 0;
 		identCour = 0;
 		varLocCount = 0;
+		varGlobCount = 0;
 		paramCount = 0;
 
 		// pile des reprises pour compilation des branchements en avant
@@ -392,7 +394,6 @@ public class PtGen {
 			if (i == 0) {
 				if (bc == 1){
 					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
-					itConst++;
 				} else {
 					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
 				}
@@ -404,9 +405,12 @@ public class PtGen {
 		case 21:
 			i = presentIdent(bc);
 			if (i == 0) {
-				if (bc == 1)
-					placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, it-itConst);
-				else{
+				if (bc == 1) {
+					placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, varGlobCount);
+					desc.setTailleGlobaux( desc.getTailleGlobaux()+1 );
+					varGlobCount++;
+				}
+				else {
 					placeIdent(UtilLex.numIdCourant, VARLOCALE, tCour, tabSymb[bc-1].info + 2 + varLocCount);
 					varLocCount ++;
 				}
@@ -474,12 +478,12 @@ public class PtGen {
 		case 26:
 			if(bc==1){
 				if(desc.getUnite().equals("module")){
-					desc.setTailleGlobaux(it-itConst);
+					desc.setTailleGlobaux(varGlobCount);
 					varLocCount = 0;
 				}
 				else {
 					po.produire(RESERVER);
-					po.produire(it-itConst);
+					po.produire(varGlobCount);
 				}
 			}
 			else {
@@ -511,7 +515,9 @@ public class PtGen {
 			break;
 		
 		case 28:
-			identCour = presentIdent(itConst+1);
+			identCour = presentIdent(1);
+			if ( identCour == 0 )
+				UtilLex.messErr("ident doesn't exist");
 			break;
 
 		case 29:
@@ -596,8 +602,12 @@ public class PtGen {
 
 		case 41:
 			indDef = desc.presentDef(UtilLex.chaineIdent(UtilLex.numIdCourant));
-			if ( indDef != 0 )
+			if ( indDef != 0 ) {
 				desc.modifDefAdPo(indDef, po.getIpo()+1);
+				placeIdent(UtilLex.numIdCourant, DEF, NEUTRE, po.getIpo()+1);
+				placeIdent(-1, PRIVEE, NEUTRE, 0);	
+				bc = it+1;		
+			}
 			else if ( presentIdent(1) == 0 ) {
 				placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, po.getIpo()+1);
 				placeIdent(-1, PRIVEE, NEUTRE, 0);	
@@ -683,10 +693,13 @@ public class PtGen {
 			}
 			break;
 
-		case 46:
+		case 46: 
 			po.produire(APPEL);
-			modifVecteurTrans(TRANSCODE);
-			po.produire(tabSymb[identCour].info);
+			if ( tabSymb[identCour].categorie == REF )
+				modifVecteurTrans(REFEXT);
+			else 
+				modifVecteurTrans(TRANSCODE);
+			po.produire(tabSymb[identCour].info); //TODO CETTE LIGNE LA C'EST ICI QUE CA DECONNE
 			po.produire(paramCount);
 
 			tabSymb[identCour+1].info = paramCount;
@@ -698,7 +711,15 @@ public class PtGen {
 			break;
 
 		case 48:
-			desc.ajoutRef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+			if ( presentIdent(1) == 0 ) {
+				desc.ajoutRef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+				desc.modifRefNbParam( desc.presentRef( UtilLex.chaineIdent(UtilLex.numIdCourant) ), 0);
+
+				placeIdent(UtilLex.numIdCourant, REF, NEUTRE, desc.getNbRef());
+				bc = it+1;			
+			} else {
+				UtilLex.messErr("ident already exist in tabSymb");
+			}
 			break;
 
 		case 49:
@@ -706,20 +727,40 @@ public class PtGen {
 			break;
 
 		case 52:
-			indRef = desc.presentRef(UtilLex.chaineIdent(UtilLex.numIdCourant));
-			if ( indRef != 0 )
-				desc.modifRefNbParam(indRef, desc.getRefNbParam(indRef)+1);
+			i = presentIdent(bc);
+			if (i == 0) {
+				placeIdent(-1, PARAMMOD, tCour, -1);
+				tabSymb[bc-1].info++;
+
+				indRef = desc.presentRef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+				if ( indRef != 0 )
+					desc.modifRefNbParam(indRef, desc.getRefNbParam(indRef)+1);
+				else
+					UtilLex.messErr("ident doesn't exist in tabRef");
+			} else {
+				UtilLex.messErr("Ident already exists");
+			}
 			break;
 
 		case 53:
+			desc.setUnite("programme");
 			break;
 
 		case 54:
+			desc.setUnite("module");
+			break;
+
+		case 55:
+			bc = 1;
 			break;
 
         case 255 : 
-			po.produire(ARRET);
+			if ( desc.getUnite().equals("programme") )
+				po.produire(ARRET);
 
+			desc.setTailleCode(po.getIpo());
+
+			desc.ecrireDesc(UtilLex.nomSource);
 			po.constGen();
 			po.constObj();
 			afftabSymb(); // affichage de la table des symboles en fin de compilation

@@ -1,0 +1,10 @@
+FICHIER Test_Declaration2.desc :
+
+unite          programme
+tailleCode     13
+tailleGlobaux  0
+nbDef          0
+nbRef          0
+nbTransExt     0
+tabDef          
+tabRef          
