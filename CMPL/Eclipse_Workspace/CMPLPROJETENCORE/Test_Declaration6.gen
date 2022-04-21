@@ -1,0 +1,58 @@
+FICHIER Test_Declaration6.gen : 
+
+   1  reserver        2
+   3  lirent    
+   4  affecterg       0
+   6  lirent    
+   7  affecterg       1
+   9  contenug        0
+  11  empiler        -1
+  13  eg        
+  14  bsifaux        21
+  16  empiler        -1
+  18  ecrent    
+  19  bincond        93
+  21  contenug        0
+  23  empiler         1
+  25  eg        
+  26  bsifaux        33
+  28  empiler         1
+  30  ecrent    
+  31  bincond        93
+  33  contenug        0
+  35  contenug        1
+  37  eg        
+  38  bsifaux        45
+  40  contenug        1
+  42  ecrent    
+  43  bincond        93
+  45  lirent    
+  46  affecterg       0
+  48  lirent    
+  49  affecterg       1
+  51  contenug        0
+  53  empiler        -1
+  55  eg        
+  56  bsifaux        63
+  58  empiler        -1
+  60  ecrent    
+  61  bincond        93
+  63  contenug        0
+  65  empiler         1
+  67  eg        
+  68  bsifaux        75
+  70  empiler         1
+  72  ecrent    
+  73  bincond        93
+  75  contenug        0
+  77  contenug        1
+  79  eg        
+  80  bsifaux        87
+  82  contenug        1
+  84  ecrent    
+  85  bincond        93
+  87  empiler        -1
+  89  empiler         1
+  91  sous      
+  92  ecrent    
+  93  arret     

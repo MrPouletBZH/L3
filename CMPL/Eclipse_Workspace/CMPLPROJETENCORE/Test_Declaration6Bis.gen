@@ -1,0 +1,12 @@
+FICHIER Test_Declaration6Bis.gen : 
+
+   1  reserver        1
+   3  lirent    
+   4  affecterg       0
+   6  contenug        0
+   8  empiler         0
+  10  eg        
+  11  bsifaux        16
+  13  contenug        0
+  15  ecrent    
+  16  arret     

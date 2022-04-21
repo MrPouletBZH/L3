@@ -1,0 +1,34 @@
+FICHIER Test_Declaration3.gen : 
+
+   1  reserver        5
+   3  empiler        77
+   5  empiler         7
+   7  sous      
+   8  empiler         2
+  10  div       
+  11  affecterg       0
+  13  empiler         7
+  15  empiler        77
+  17  diff      
+  18  affecterg       2
+  20  empiler         7
+  22  empiler        77
+  24  inf       
+  25  affecterg       3
+  27  lirent    
+  28  affecterg       0
+  30  lirent    
+  31  affecterg       1
+  33  lirebool  
+  34  affecterg       4
+  36  contenug        0
+  38  ecrent    
+  39  contenug        1
+  41  ecrent    
+  42  contenug        2
+  44  ecrbool   
+  45  contenug        3
+  47  ecrbool   
+  48  contenug        4
+  50  ecrbool   
+  51  arret     
