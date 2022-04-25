@@ -590,18 +590,22 @@ public class PtGen {
 			break;
 
 		case 39:
-			po.produire(BINCOND);
-			modifVecteurTrans(TRANSCODE);
-			po.produire(0);
-			pileRep.empiler(po.getIpo());
+			if ( desc.getUnite().equals("programme") ) {
+				po.produire(BINCOND);
+				modifVecteurTrans(TRANSCODE);
+				po.produire(0);
+				pileRep.empiler(po.getIpo());
+			}
 			break;
 
 		case 40:
-			po.modifier(pileRep.depiler(), po.getIpo()+1);
+			if ( desc.getUnite().equals("programme") )
+				po.modifier(pileRep.depiler(), po.getIpo()+1);
 			break;
 
 		case 41:
 			indDef = desc.presentDef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+			identCour = UtilLex.numIdCourant;
 			if ( indDef != 0 ) {
 				desc.modifDefAdPo(indDef, po.getIpo()+1);
 				placeIdent(UtilLex.numIdCourant, DEF, NEUTRE, po.getIpo()+1);
@@ -622,7 +626,8 @@ public class PtGen {
 			if (i == 0) {
 				placeIdent(UtilLex.numIdCourant, PARAMFIXE, tCour, tabSymb[bc-1].info);
 				tabSymb[bc-1].info++;
-				indDef = desc.presentDef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+
+				indDef = desc.presentDef( UtilLex.chaineIdent(identCour) );
 				if ( indDef != 0 )
 					desc.modifDefNbParam(indDef, tabSymb[bc-1].info);
 			} else {
@@ -635,7 +640,8 @@ public class PtGen {
 			if (i == 0) {
 				placeIdent(UtilLex.numIdCourant, PARAMMOD, tCour, tabSymb[bc-1].info);
 				tabSymb[bc-1].info++;
-				indDef = desc.presentDef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+
+				indDef = desc.presentDef( UtilLex.chaineIdent(identCour) );
 				if ( indDef != 0 )
 					desc.modifDefNbParam(indDef, tabSymb[bc-1].info);
 			} else {
@@ -699,11 +705,14 @@ public class PtGen {
 				modifVecteurTrans(REFEXT);
 			else 
 				modifVecteurTrans(TRANSCODE);
-			po.produire(tabSymb[identCour].info); //TODO CETTE LIGNE LA C'EST ICI QUE CA DECONNE
+			po.produire(tabSymb[identCour].info);
 			po.produire(paramCount);
-
-			tabSymb[identCour+1].info = paramCount;
+			
+			if (tabSymb[identCour].categorie != REF){
+				tabSymb[identCour+1].info = paramCount;
+			}
 			paramCount = 0;
+	
 			break;
 
 		case 47:
@@ -724,13 +733,13 @@ public class PtGen {
 
 		case 49:
 			desc.ajoutDef(UtilLex.chaineIdent(UtilLex.numIdCourant));
+			desc.modifDefNbParam( desc.presentDef(UtilLex.chaineIdent(UtilLex.numIdCourant)) , 0);
 			break;
 
 		case 52:
 			i = presentIdent(bc);
 			if (i == 0) {
 				placeIdent(-1, PARAMMOD, tCour, -1);
-				tabSymb[bc-1].info++;
 
 				indRef = desc.presentRef(UtilLex.chaineIdent(UtilLex.numIdCourant));
 				if ( indRef != 0 )

@@ -62,7 +62,7 @@ public class Edl {
 					+ " (RC si termine) ");
 			s = Lecture.lireString();
 			if (!s.equals("")) {
-				nMod = nMod + 1;
+				nMod++;
 				tabDesc[nMod] = new Descripteur();
 				tabDesc[nMod].lireDesc(s);
 
